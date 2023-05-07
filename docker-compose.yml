@@ -3,10 +3,25 @@ services:
   hctcg:
     build: .
     container_name: hc-tcg
+    networks:
+      - proxy
     ports:
       - 9000:9000
     volumes:
       - hc-tcg:/app
     restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+      - "traefik.http.routers.tcg.rule=Host(`${TCGHOST}`)"
+      - "traefik.http.routers.tcg.entrypoints=https"
+      - "traefik.http.routers.tcg.tls=true"
+      - "traefik.http.routers.tcg.middlewares=robotics"
+
 volumes:
   hc-tcg:
+
+
+networks:
+  proxy:
+    external: true
