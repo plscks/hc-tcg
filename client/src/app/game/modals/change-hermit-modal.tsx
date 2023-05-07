@@ -4,6 +4,7 @@ import {getAvailableActions, getPlayerState} from 'logic/game/game-selectors'
 import css from './change-hermit-modal.module.css'
 import {PickedCardT} from 'common/types/pick-process'
 import {HERMIT_CARDS} from 'server/cards'
+import Button from 'components/button'
 
 type Props = {
 	closeModal: () => void
@@ -64,12 +65,18 @@ function ChangeHermitModal({closeModal, info}: Props) {
 				<div className={css.options}>
 					{canChange ? (
 						<>
-							<button onClick={handleYes}>Yes</button>
-							<button onClick={handleNo}>No</button>
+							<Button variant="primary" size="small" onClick={handleYes}>
+								Yes
+							</Button>
+							<Button variant="primary" size="small" onClick={handleNo}>
+								No
+							</Button>
 						</>
 					) : (
 						<>
-							<button onClick={handleNo}>Ok</button>
+							<Button variant="primary" size="small" onClick={handleNo}>
+								Ok
+							</Button>
 						</>
 					)}
 				</div>

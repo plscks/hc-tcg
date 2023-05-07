@@ -2,7 +2,11 @@ import {useEffect} from 'react'
 import {useSelector, useDispatch} from 'react-redux'
 import classnames from 'classnames'
 import CoinFlip from 'components/coin-flip'
-import {GameState, PlayerState, RowState} from 'common/types/game-state'
+import {
+	LocalGameState,
+	LocalPlayerState,
+	RowState,
+} from 'common/types/game-state'
 import {PickedCardT} from 'common/types/pick-process'
 import {getSettings} from 'logic/local-settings/local-settings-selectors'
 import {getPlayerId} from 'logic/session/session-selectors'
@@ -18,18 +22,21 @@ import Slot from './board-slot'
 import BoardRow from './board-row'
 import PlayerInfo from './player-info'
 import Timer from './timer'
+import Button from 'components/button'
 
 // TODO - Don't allow clicking on slots on the other side
 
 type Props = {
 	onClick: (meta: PickedCardT) => void
-	gameState: GameState
+	localGameState: LocalGameState
 }
 
 // TODO - Use selectors instead of passing gameState
-function Board({onClick, gameState}: Props) {
+function Board({onClick, localGameState}: Props) {
 	const playerId = useSelector(getPlayerId)
-	const currentPlayer = useSelector(getPlayerStateById(gameState.turnPlayerId))
+	const currentPlayer = useSelector(
+		getPlayerStateById(localGameState.currentPlayerId)
+	)
 	const boardState = currentPlayer?.board
 	const singleUseCard = boardState?.singleUseCard || null
 	const singleUseCardUsed = boardState?.singleUseCardUsed || false
@@ -39,10 +46,10 @@ function Board({onClick, gameState}: Props) {
 	const dispatch = useDispatch()
 
 	useEffect(() => {
-		if (gameState.turnPlayerId === playerId) {
+		if (localGameState.currentPlayerId === playerId) {
 			dispatch(playSound('/sfx/Click.ogg'))
 		}
-	}, [gameState.turnPlayerId])
+	}, [localGameState.currentPlayerId])
 
 	const handeRowClick = (
 		playerId: string,
@@ -69,7 +76,7 @@ function Board({onClick, gameState}: Props) {
 		}
 	}
 
-	const makeRows = (playerState: PlayerState, type: 'left' | 'right') => {
+	const makeRows = (playerState: LocalPlayerState, type: 'left' | 'right') => {
 		const rows = playerState.board.rows
 		return new Array(5).fill(null).map((_, index) => {
 			if (!rows[index]) throw new Error('Rendering board row failed')
@@ -103,17 +110,19 @@ function Board({onClick, gameState}: Props) {
 		}
 
 		return (
-			<button
+			<Button
+				variant="default"
+				size="small"
 				onClick={handleEndTurn}
 				disabled={!availableActions.includes('END_TURN')}
 			>
 				End Turn
-			</button>
+			</Button>
 		)
 	}
 
-	const [player1, player2] = gameState.order.map(
-		(playerId) => gameState.players[playerId]
+	const [player1, player2] = localGameState.order.map(
+		(playerId) => localGameState.players[playerId]
 	)
 	return (
 		<div className={css.board}>
@@ -138,7 +147,7 @@ function Board({onClick, gameState}: Props) {
 										onClick({
 											slotType: 'single_use',
 											card: singleUseCard,
-											playerId: gameState.turnPlayerId,
+											playerId: localGameState.currentPlayerId,
 										})
 								: undefined
 						}

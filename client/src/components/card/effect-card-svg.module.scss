@@ -22,6 +22,32 @@
 	fill: rgb(226, 202, 139);
 }
 
-/* .icon {
-	filter: url('#drop-shadow');
-} */
+.rarity {
+	fill: rgb(226, 202, 139);
+}
+
+.rank {
+	filter: drop-shadow(0 0 5px rgb(92, 92, 92));
+}
+
+.rankText {
+	&.iron {
+		fill: #726f6d;
+	}
+
+	&.gold {
+		fill: #958e31;
+	}
+
+	&.emerald {
+		fill: #348647;
+	}
+
+	&.diamond {
+		fill: #2a7c8a;
+	}
+
+	&.netherite {
+		fill: #b1ada9;
+	}
+}

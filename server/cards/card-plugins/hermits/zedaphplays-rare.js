@@ -61,7 +61,7 @@ class ZedaphPlaysRareHermitCard extends HermitCard {
 			if (!coinFlip) return target
 			delete opponentPlayer.custom[this.id]
 
-			currentPlayer.coinFlips[this.id] = coinFlip
+			currentPlayer.coinFlips['Opponent ' + this.name] = coinFlip
 			if (coinFlip[0] !== 'heads') return target
 
 			target.reverseDamage = true

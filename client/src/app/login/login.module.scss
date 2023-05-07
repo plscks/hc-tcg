@@ -7,10 +7,6 @@
 	background-image: url('/images/menu-background.png');
 	background-size: cover;
 	background-position: center;
-
-	* {
-		font-family: Minecraft;
-	}
 }
 
 .loginContainer {
@@ -56,8 +52,8 @@
 
 .customInput {
 	position: relative;
-	width: 35vh;
 	height: 5vh;
+	width: 35vh;
 
 	input {
 		padding-left: 1vh;

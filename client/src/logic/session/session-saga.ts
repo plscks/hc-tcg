@@ -6,6 +6,13 @@ import {sendMsg, receiveMsg} from 'logic/socket/socket-saga'
 import {socketConnecting} from 'logic/socket/socket-actions'
 import {setPlayerInfo, disconnect, setNewDeck} from './session-actions'
 import {getDeckFromHash} from 'components/import-export/import-export-utils'
+import {
+	getActiveDeckName,
+	getSavedDeck,
+	saveDeck,
+	setActiveDeck,
+} from 'logic/saved-decks/saved-decks'
+import {validateDeck} from 'server/utils/validation'
 
 type PlayerInfoT = {
 	playerName: string
@@ -113,9 +120,25 @@ export function* loginSaga(): SagaIterator {
 
 	if (result.playerInfo) {
 		const {payload} = result.playerInfo
-		console.log('New player info: ', payload)
-		yield put(setPlayerInfo(payload))
+		yield put(setPlayerInfo({...payload}))
 		saveSession(payload)
+
+		const activeDeckName = getActiveDeckName()
+		const activeDeck = activeDeckName ? getSavedDeck(activeDeckName) : null
+		const activeDeckValid =
+			!!activeDeck && !validateDeck(activeDeck.cards.map((card) => card.cardId))
+
+		// if active deck is not valid, generate and save a starter deck
+		if (activeDeckValid) {
+			// set player deck to active deck, and send to server
+			console.log('Selected previous active deck: ' + activeDeck.name)
+			yield call(sendMsg, 'UPDATE_DECK', activeDeck)
+		} else {
+			// use and save the generated starter deck
+			saveDeck(payload.playerDeck)
+			setActiveDeck(payload.playerDeck.name)
+			console.log('Generated new starter deck')
+		}
 
 		// set user info for reconnects
 		socket.auth.playerId = payload.playerId
