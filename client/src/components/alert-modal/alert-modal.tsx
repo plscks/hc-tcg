@@ -10,7 +10,8 @@ type AlertModal = {
 	action: () => void
 	title: ReactNode
 	description: ReactNode
-	actionText: string
+	actionText?: string
+	actionType?: 'default' | 'primary' | 'secondary' | 'error' | 'stone'
 	buttonDirection?: 'row' | 'column'
 }
 
@@ -20,6 +21,7 @@ const AlertModal = ({
 	title,
 	description,
 	actionText,
+	actionType,
 	action,
 	buttonDirection,
 }: AlertModal) => (
@@ -36,20 +38,17 @@ const AlertModal = ({
 				<AlertDialog.Description className={css.AlertDialogDescription}>
 					{description}
 				</AlertDialog.Description>
-				<div
-					className={cn(
-						css.buttonContainer,
-						buttonDirection === 'column' && css.column
-					)}
-				>
+				<div className={cn(css.buttonContainer, buttonDirection === 'column' && css.column)}>
 					<AlertDialog.Cancel asChild>
 						<Button.Ref>Cancel</Button.Ref>
 					</AlertDialog.Cancel>
-					<AlertDialog.Action asChild>
-						<Button.Ref variant="error" onClick={action}>
-							{actionText}
-						</Button.Ref>
-					</AlertDialog.Action>
+					{actionText && (
+						<AlertDialog.Action asChild>
+							<Button.Ref variant={actionType || 'error'} onClick={action}>
+								{actionText}
+							</Button.Ref>
+						</AlertDialog.Action>
+					)}
 				</div>
 			</AlertDialog.Content>
 		</AlertDialog.Portal>

@@ -31,6 +31,7 @@
 	--common: rgb(0, 197, 0);
 	--rare: rgb(249, 168, 3);
 	--ultra-rare: rgb(98, 255, 255);
+	--breakpoint: 80rem;
 }
 
 @font-face {
@@ -63,6 +64,17 @@
 	src: url('/fonts/BangersBold.otf');
 }
 
+@font-face {
+	font-family: Badaboom;
+	src: url('/fonts/badaboom-bb.regular.otf');
+}
+
+* {
+	box-sizing: border-box;
+	padding: 0;
+	margin: 0;
+}
+
 html,
 body,
 #root,
@@ -73,26 +85,20 @@ main {
 
 body {
 	margin: 0;
-	font-family: Minecraft, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-		Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-		sans-serif;
+	font-family: Minecraft, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
+		Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 	font-size: 1rem;
 	background: rgb(72, 72, 72);
+
+	* {
+		user-select: none;
+	}
 }
 
 code {
-	font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-		monospace;
-}
-
-/* @TODO this should only be cleaned up after game screen is reworked */
-
-* {
-	box-sizing: border-box;
-	padding: 0;
-	margin: 0;
+	font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
 h1,
@@ -105,7 +111,10 @@ h6 {
 }
 
 button {
-	all: unset;
+	margin: 0;
+	padding: 0;
+	border: none;
+	background: none;
 }
 
 input:not([type]),
@@ -119,42 +128,15 @@ input[type='text'] {
 	font-family: Minecraft;
 }
 
+input:focus-visible {
+	outline: none;
+}
+
 ul,
 li {
 	list-style: none;
 	margin: 0;
 	padding-inline: 0;
-}
-
-::-webkit-scrollbar-corner {
-	background: transparent;
-}
-
-/* changes for new look, note that all the above will get redone eventually */
-
-.temp {
-	button {
-		line-height: 100%;
-		text-align: center;
-		height: 5vh;
-		font-size: 2vh;
-		border: 0.3vh solid #000;
-		text-shadow: 0.2vh 0.2vh #000;
-		box-shadow: inset -0.3vh -0.5vh #0006, inset 0.3vh 0.3vh #fff7;
-		padding: 0 2vh;
-	}
-
-	input:not([type]),
-	input[type='text'] {
-		border: 0.3vh solid #000;
-		height: 5vh;
-		font-size: 2vh;
-
-		&:focus-visible {
-			outline-offset: 0;
-			outline: none;
-		}
-	}
 }
 
 /* scrollbar */
@@ -184,11 +166,4 @@ li {
 ::-webkit-scrollbar-corner,
 ::-webkit-resizer {
 	display: none;
-}
-
-// new stuff
-
-.select {
-	padding-bottom: 1px;
-	background-color: #2a2727;
 }

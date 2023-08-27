@@ -4,8 +4,6 @@
 }
 
 .card text {
-	dominant-baseline: hanging;
-	text-anchor: middle;
 	fill: black;
 	letter-spacing: 8px;
 }
@@ -91,7 +89,7 @@
 		fill: #2a7c8a;
 	}
 
-	&.netherite {
+	&.obsidian {
 		fill: #b1ada9;
 	}
 }

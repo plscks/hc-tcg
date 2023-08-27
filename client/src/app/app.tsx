@@ -1,7 +1,7 @@
-import {useState, useEffect} from 'react'
+import {useState, useEffect, useMemo} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
+import {getSettings} from 'logic/local-settings/local-settings-selectors'
 import {getPlayerName, getToast} from 'logic/session/session-selectors'
-import LostConnection from 'components/lost-connection'
 import {getSocketStatus} from 'logic/socket/socket-selectors'
 import {sectionChange} from 'logic/sound/sound-actions'
 import {useRouter} from './app-hooks'
@@ -11,6 +11,11 @@ import MainMenu from './main-menu'
 import Deck from './deck'
 import MatchMaking from './match-making'
 import Toast from 'components/toast'
+import Settings from './main-menu/settings'
+import GameSettings from './main-menu/game-settings'
+import Credits from './main-menu/credits'
+import LostConnection from 'components/lost-connection'
+import Background from 'components/background'
 
 function App() {
 	const section = useRouter()
@@ -18,13 +23,13 @@ function App() {
 	const playerName = useSelector(getPlayerName)
 	const socketStatus = useSelector(getSocketStatus)
 	const toastMessage = useSelector(getToast)
+	const settings = useSelector(getSettings)
 	const [menuSection, setMenuSection] = useState<string>('mainmenu')
+	let enableToast = false
 
 	useEffect(() => {
 		dispatch(sectionChange(section))
 	}, [section])
-
-	let showToast = false
 
 	const router = () => {
 		if (section === 'game') {
@@ -32,10 +37,17 @@ function App() {
 		} else if (section === 'matchmaking') {
 			return <MatchMaking />
 		} else if (playerName) {
-			showToast = true
+			enableToast = true
 			switch (menuSection) {
 				case 'deck':
 					return <Deck setMenuSection={setMenuSection} />
+				case 'settings':
+					return <Settings setMenuSection={setMenuSection} />
+				case 'game-settings':
+					return <GameSettings setMenuSection={setMenuSection} />
+				case 'credits':
+					return <Credits setMenuSection={setMenuSection} />
+				case 'mainmenu':
 				default:
 					return <MainMenu setMenuSection={setMenuSection} />
 			}
@@ -43,19 +55,23 @@ function App() {
 		return <Login />
 	}
 
+	const background = useMemo(() => {
+		return <Background panorama={settings.panorama} disabled={!settings.panoramaEnabled} />
+	}, [settings.panoramaEnabled])
+
 	return (
 		<main>
+			{background}
 			{router()}
-			{playerName && !socketStatus ? <LostConnection /> : null}
-
-			{showToast ? (
+			{playerName && !socketStatus && <LostConnection />}
+			{enableToast && (
 				<Toast
 					title={toastMessage.title}
 					description={toastMessage.description}
 					image={toastMessage.image}
 					setOpen={toastMessage.open}
 				/>
-			) : null}
+			)}
 		</main>
 	)
 }

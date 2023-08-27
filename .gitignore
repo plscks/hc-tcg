@@ -9,6 +9,7 @@
 /coverage
 
 # production
+server/dist
 client/dist
 client/dist-ssr
 *.local
@@ -34,3 +35,6 @@ fly.toml
 
 # admin key for firebase
 *adminKey*
+
+# api keys
+*apiKeys*
